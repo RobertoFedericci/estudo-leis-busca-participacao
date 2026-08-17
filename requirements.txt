@@ -1,0 +1,3 @@
+# Coleta do Google Trends e do e-Cidadania. Os demais scripts (baixar_senado.py
+# e gerar_html.py) rodam só com a biblioteca padrão do Python.
+requests>=2.32

@@ -1,0 +1,7 @@
+# Base bruta do Senado (~40 MB): baixe com scripts/baixar_senado.py
+dados/senado/
+# Cache das requisições ao Trends
+dados/cache_trends/
+__pycache__/
+*.pyc
+venv/
