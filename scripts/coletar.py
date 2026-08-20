@@ -22,11 +22,19 @@ import json
 import os
 import sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 from trends_client import TrendsClient, TrendsError
-from topicos import TOPICOS
+import importlib
+# um módulo de tópicos por tema: topicos_meio_ambiente, topicos_saude, …
+TOPICOS = importlib.import_module(
+    os.environ.get("TOPICOS_MOD", "topicos_meio_ambiente")).TOPICOS
 
 TIMEFRAME = os.environ.get("TIMEFRAME", "2016-01-01 2026-08-16")
 OUT = os.environ.get("OUT", "dados/dados.json")
+# termo genérico do tema, medido na mesma régua para dar a leitura do índice
+# ("a soma das leis de saúde vale X% do que se busca por 'saúde'")
+REFERENCIA = os.environ.get("REFERENCIA", "meio ambiente")
 
 # âncoras em ordem decrescente de volume. Cada uma é medida contra a anterior
 # (não contra a primeira), senão as fracas zeram e a régua se perde.
@@ -103,6 +111,22 @@ def main():
             print(f"     grupo {gi}/{len(grupos)}: " + " | ".join(saida))
         pendentes = proximos
 
+    # ---------- 2b. o termo de referência do tema, na mesma régua ----------
+    ref_nivel = nivel_ancora.get(REFERENCIA)
+    if ref_nivel is None:
+        ref_nivel = 0.0
+        for ancora in ANCORAS:
+            if nivel_ancora[ancora] <= 0:
+                continue
+            d = cli.interest_over_time([ancora, REFERENCIA], TIMEFRAME)
+            ma = serie_max(d[ancora])
+            bruto = serie_max(d[REFERENCIA])
+            if ma >= MIN_ANCORA and bruto > 0:
+                ref_nivel = bruto * nivel_ancora[ancora] / ma
+                if bruto >= LIMIAR_RESOLUCAO:
+                    break
+    print(f"  referência '{REFERENCIA}': nível {ref_nivel:.4f}")
+
     # ---------- 3. formato de cada curva ----------
     print("[3/3] baixando a curva individual de cada tópico…")
     series = {}
@@ -125,7 +149,9 @@ def main():
         sys.exit("nenhuma série retornou dados")
     n = len(eixo)
 
-    saida = {"timeframe": TIMEFRAME, "eixo": eixo, "topicos": []}
+    saida = {"timeframe": TIMEFRAME, "eixo": eixo,
+             "referencia": {"termo": REFERENCIA, "nivel": round(ref_nivel, 4)},
+             "topicos": []}
     for ident, ano, virou_norma, ementa, q in TOPICOS:
         pontos = series.get(q) or []
         nivel = niveis.get(q, 0.0)

@@ -573,6 +573,7 @@ def carregar(slug):
 
 def metricas(d):
     amb = d["topicos"]
+    ref_nivel = (d.get("referencia") or {}).get("nivel") or 100.0
     n = len(d["eixo"])
     consolidado = [sum(t["valores"][i] for t in amb) for i in range(n)]
     pico = max(range(n), key=lambda i: consolidado[i])
@@ -585,6 +586,7 @@ def metricas(d):
         "com_sinal": [t for t in amb if t["nivel"] > 0],
         "pico_val": consolidado[pico],
         "pico_fmt": f"{consolidado[pico]:.2f}".replace(".", ","),
+        "pico_pct": 100 * consolidado[pico] / ref_nivel,
         "pico_mes": rotulo_mes(d["eixo"][pico]),
         "concentracao": (100 * sum(sorted((t["nivel"] for t in amb), reverse=True)[:3])
                          / total_nivel) if total_nivel else 0.0,
@@ -607,7 +609,7 @@ def painel_html(cfg, d, mt):
     com_voto, mais_votada = mt["com_voto"], mt["mais_votada"]
     votos_total, conc_voto = mt["votos_total"], mt["conc_voto"]
     concentracao, pico_val, pico_fmt = mt["concentracao"], mt["pico_val"], mt["pico_fmt"]
-    pico_mes, rejeitadas = mt["pico_mes"], mt["rejeitadas"]
+    pico_mes, rejeitadas, pico_pct = mt["pico_mes"], mt["rejeitadas"], mt["pico_pct"]
     return f"""<div class="tiles">
   <div class="tile"><div class="v">{len(amb)}</div><div class="l">matérias no índice</div>
     <div class="h">levantamento legislativo do Senado, 2017–2026</div></div>
@@ -625,7 +627,7 @@ def painel_html(cfg, d, mt):
   todas foram postas numa régua comum — e essa régua é uma busca de referência que <b>não faz parte do
   índice</b>: a procura pela expressão genérica “{cfg["referencia"]}”, cujo pico na década vale 100.
   Lê-se assim: no melhor mês, {pico_mes}, a atenção somada a <b>todas</b> as {len(amb)} leis do tema
-  chegou a {pico_fmt} — cerca de {pico_val:.0f}% do que os brasileiros procuram quando digitam
+  chegou a {pico_fmt} — cerca de {pico_pct:.0f}% do que os brasileiros procuram quando digitam
   simplesmente “{cfg["referencia"]}”.</p>
   <div class="card">
     <div class="ctrl">

@@ -16,9 +16,16 @@ import re
 import sys
 import time
 
+import sys
+
 import requests
 
-from topicos import TOPICOS
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+import importlib
+# um módulo de tópicos por tema: topicos_meio_ambiente, topicos_saude, …
+TOPICOS = importlib.import_module(
+    os.environ.get("TOPICOS_MOD", "topicos_meio_ambiente")).TOPICOS
 
 # JSONs do endpoint /dadosabertos/processo?ano=AAAA da API do Senado Federal
 # (legis.senado.leg.br/dadosabertos), um arquivo por ano: processo_2017.json …
