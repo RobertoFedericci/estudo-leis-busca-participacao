@@ -435,7 +435,12 @@ Object.entries(window.__DADOS__ || {}).forEach(([slug,D])=>{
   if(raiz) montarPainel(raiz, D, {marcos: cfg.marcos||[]});
 });
 
-/* ================= aba 5: volume de participação ================= */
+/* ================= aba 5: volume de participação =================
+   Sem cor por tema nas barras: quatro cores categóricas não passam nos testes
+   de separação em todos-os-pares (laranja↔vermelho ΔE 7,1 em visão normal no
+   modo claro; amarelo↔vermelho 13,0 no escuro). Como este gráfico mede
+   magnitude, não identidade, todas as barras usam uma cor só, e o tema é
+   identificado pelos filtros e pela coluna da tabela — texto, não matiz. */
 (function(){
   const raiz = document.querySelector('[data-painel="ecidadania"]');
   if(!raiz) return;
@@ -451,8 +456,7 @@ Object.entries(window.__DADOS__ || {}).forEach(([slug,D])=>{
 
   function chips(){
     el('filtros-tema').innerHTML = temas.map(t=>
-      `<button data-tema="${t.slug}" aria-pressed="${ativos.has(t.slug)}">`
-      + `<i style="background:var(${t.cor})"></i>${t.rotulo}</button>`).join('')
+      `<button data-tema="${t.slug}" aria-pressed="${ativos.has(t.slug)}">${t.rotulo}</button>`).join('')
       + `<button data-tema="__todos" aria-pressed="true" style="border-style:dashed">Todos</button>`;
   }
 
@@ -472,7 +476,7 @@ Object.entries(window.__DADOS__ || {}).forEach(([slug,D])=>{
     lista.forEach((x,k)=>{
       const y=k*rh+8, w=comp(x.total);
       svg += `<text x="0" y="${y+13}" font-size="11.5" fill="var(--ink-2)">${x.id}</text>`
-        + `<rect x="${padL}" y="${y+2}" width="${w.toFixed(1)}" height="14" rx="4" fill="var(${x.cor})"/>`
+        + `<rect x="${padL}" y="${y+2}" width="${w.toFixed(1)}" height="14" rx="4" fill="var(--s1)"/>`
         + `<text x="${(padL+w+8).toFixed(1)}" y="${y+13}" font-size="11" fill="var(--ink-2)" font-weight="600">${x.total.toLocaleString('pt-BR')}</text>`;
     });
     svg += `</svg>`;
@@ -491,7 +495,7 @@ Object.entries(window.__DADOS__ || {}).forEach(([slug,D])=>{
     agg.forEach((t,k)=>{
       const y=k*rh+8, w=Math.max(2, t.votos/agg[0].votos*larg);
       svg += `<text x="0" y="${y+15}" font-size="12" fill="var(--ink-2)">${t.rotulo}</text>`
-        + `<rect x="${padL}" y="${y+3}" width="${w.toFixed(1)}" height="16" rx="4" fill="var(${t.cor})"/>`
+        + `<rect x="${padL}" y="${y+3}" width="${w.toFixed(1)}" height="16" rx="4" fill="var(--s1)"/>`
         + `<text x="${(padL+w+9).toFixed(1)}" y="${y+16}" font-size="11.5" fill="var(--ink)" font-weight="600">${t.votos.toLocaleString('pt-BR')}</text>`
         + `<text x="${(padL+w+9).toFixed(1)}" y="${y+29}" font-size="11" fill="var(--muted)">${(100*t.votos/total).toFixed(0)}% · ${t.n} matérias</text>`;
     });
@@ -503,7 +507,7 @@ Object.entries(window.__DADOS__ || {}).forEach(([slug,D])=>{
     el('g-tbody').innerHTML = filtrados().map(x=>{
       const pctNao = 100 - x.pct_sim;
       return `<tr><td><b>${x.id}</b></td><td>${x.ementa}</td>`
-        + `<td><span class="tag"><i style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(${x.cor});margin-right:5px"></i>${x.rotulo}</span></td>`
+        + `<td><span class="tag">${x.rotulo}</span></td>`
         + `<td class="num">${x.sim.toLocaleString('pt-BR')}</td><td class="num">${x.nao.toLocaleString('pt-BR')}</td>`
         + `<td class="num">${x.pct_sim.toFixed(0)}%</td><td class="num">${pctNao.toFixed(0)}%</td>`
         + `<td class="num"><b>${x.total.toLocaleString('pt-BR')}</b></td></tr>`;
@@ -545,7 +549,7 @@ TEMAS = [
      "referencia": "economia", "cor": "--s4",
      "titulo": "O que o Brasil procura das leis de economia", "marcos": []},
     {"slug": "saude", "rotulo": "Saúde", "rotulo_min": "saúde",
-     "referencia": "saúde", "cor": "--s2",
+     "referencia": "saúde", "cor": "--s1",
      "titulo": "O que o Brasil procura das leis de saúde", "marcos": []},
     {"slug": "seguranca", "rotulo": "Segurança", "rotulo_min": "segurança",
      "referencia": "segurança pública", "cor": "--s8",
@@ -623,12 +627,11 @@ def painel_html(cfg, d, mt):
 
 <section>
   <h2>Busca consolidada por todas as matérias</h2>
-  <p class="note">Soma das {len(amb)} curvas. Para que curvas de consultas diferentes pudessem ser somadas,
-  todas foram postas numa régua comum — e essa régua é uma busca de referência que <b>não faz parte do
-  índice</b>: a procura pela expressão genérica “{cfg["referencia"]}”, cujo pico na década vale 100.
-  Lê-se assim: no melhor mês, {pico_mes}, a atenção somada a <b>todas</b> as {len(amb)} leis do tema
-  chegou a {pico_fmt} — cerca de {pico_pct:.0f}% do que os brasileiros procuram quando digitam
-  simplesmente “{cfg["referencia"]}”.</p>
+  <p class="note">Soma das {len(amb)} curvas numa <b>régua comum aos quatro temas</b>, o que os torna
+  comparáveis entre si. A unidade da régua é uma busca de referência que <b>não entra em índice nenhum</b>:
+  o valor 100 é o pico de procura pela expressão “meio ambiente” na década. Lê-se assim: no melhor mês,
+  {pico_mes}, a atenção somada às {len(amb)} leis deste tema chegou a {pico_fmt} — o equivalente a
+  {pico_pct:.0f}% da busca pela expressão genérica “{cfg["referencia"]}”.</p>
   <div class="card">
     <div class="ctrl">
       <button data-el="btn-log" aria-pressed="true">Escala log</button>

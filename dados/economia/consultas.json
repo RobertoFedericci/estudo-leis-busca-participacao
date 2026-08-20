@@ -1,0 +1,402 @@
+{
+ "PEC 45/2019": {
+  "codigo": 158930,
+  "sim": 66,
+  "nao": 108,
+  "total": 174,
+  "pct_sim": 37.9,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=158930"
+ },
+ "PLP 108/2024": {
+  "codigo": 166095,
+  "sim": 21,
+  "nao": 54,
+  "total": 75,
+  "pct_sim": 28.0,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=166095"
+ },
+ "PL 1087/2025": {
+  "codigo": 170775,
+  "sim": 86,
+  "nao": 70,
+  "total": 156,
+  "pct_sim": 55.1,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=170775"
+ },
+ "PL 2692/2025": {
+  "codigo": 169333,
+  "sim": 3,
+  "nao": 0,
+  "total": 3,
+  "pct_sim": 100.0,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=169333"
+ },
+ "PL 81/2024": {
+  "codigo": 162648,
+  "sim": 2,
+  "nao": 1,
+  "total": 3,
+  "pct_sim": 66.7,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=162648"
+ },
+ "PL 4173/2023": {
+  "codigo": 160970,
+  "sim": 9,
+  "nao": 34,
+  "total": 43,
+  "pct_sim": 20.9,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=160970"
+ },
+ "MPV 1185/2023": {
+  "codigo": 159641,
+  "sim": 9,
+  "nao": 129,
+  "total": 138,
+  "pct_sim": 6.5,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=159641"
+ },
+ "PL 3817/2024": {
+  "codigo": 166854,
+  "sim": 1,
+  "nao": 0,
+  "total": 1,
+  "pct_sim": 100.0,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=166854"
+ },
+ "MPV 1031/2021": {
+  "codigo": 146740,
+  "sim": 56761,
+  "nao": 62837,
+  "total": 119598,
+  "pct_sim": 47.5,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=146740"
+ },
+ "MPV 881/2019": {
+  "codigo": 136531,
+  "sim": 19993,
+  "nao": 21851,
+  "total": 41844,
+  "pct_sim": 47.8,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=136531"
+ },
+ "MPV 1040/2021": {
+  "codigo": 147864,
+  "sim": 6013,
+  "nao": 16844,
+  "total": 22857,
+  "pct_sim": 26.3,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=147864"
+ },
+ "PL 4162/2019": {
+  "codigo": 140534,
+  "sim": 2826,
+  "nao": 7225,
+  "total": 10051,
+  "pct_sim": 28.1,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=140534"
+ },
+ "PL 5516/2019": {
+  "codigo": 139338,
+  "sim": 71,
+  "nao": 6,
+  "total": 77,
+  "pct_sim": 92.2,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=139338"
+ },
+ "PL 1282/2020": {
+  "codigo": 141363,
+  "sim": 14,
+  "nao": 0,
+  "total": 14,
+  "pct_sim": 100.0,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=141363"
+ },
+ "MPV 975/2020": {
+  "codigo": 142263,
+  "sim": 72,
+  "nao": 1,
+  "total": 73,
+  "pct_sim": 98.6,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=142263"
+ },
+ "PEC 10/2020": {
+  "codigo": 141443,
+  "sim": 29,
+  "nao": 368,
+  "total": 397,
+  "pct_sim": 7.3,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=141443"
+ },
+ "PEC 186/2019": {
+  "codigo": 139702,
+  "sim": 7737,
+  "nao": 291128,
+  "total": 298865,
+  "pct_sim": 2.6,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=139702"
+ },
+ "PLC 39/2017": {
+  "codigo": 129171,
+  "sim": 2,
+  "nao": 2,
+  "total": 4,
+  "pct_sim": 50.0,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=129171"
+ },
+ "MPV 783/2017": {
+  "codigo": 129380,
+  "sim": 102,
+  "nao": 450,
+  "total": 552,
+  "pct_sim": 18.5,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=129380"
+ },
+ "PL 4287/2023": {
+  "codigo": 159688,
+  "sim": 5,
+  "nao": 0,
+  "total": 5,
+  "pct_sim": 100.0,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=159688"
+ },
+ "PL 2384/2023": {
+  "codigo": 158907,
+  "sim": 2,
+  "nao": 4,
+  "total": 6,
+  "pct_sim": 33.3,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=158907"
+ },
+ "PL 3449/2024": {
+  "codigo": 166094,
+  "sim": 0,
+  "nao": 0,
+  "total": 0,
+  "pct_sim": null,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=166094"
+ },
+ "PL 1847/2024": {
+  "codigo": 163641,
+  "sim": 12,
+  "nao": 18,
+  "total": 30,
+  "pct_sim": 40.0,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=163641"
+ },
+ "PL 1166/2020": {
+  "codigo": 141297,
+  "sim": 1085,
+  "nao": 2602,
+  "total": 3687,
+  "pct_sim": 29.4,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=141297"
+ },
+ "PL 4089/2023": {
+  "codigo": 159367,
+  "sim": 7,
+  "nao": 0,
+  "total": 7,
+  "pct_sim": 100.0,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=159367"
+ },
+ "MPV 1132/2022": {
+  "codigo": 154293,
+  "sim": 53,
+  "nao": 2,
+  "total": 55,
+  "pct_sim": 96.4,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=154293"
+ },
+ "PL 133/2024": {
+  "codigo": 161936,
+  "sim": 165,
+  "nao": 9,
+  "total": 174,
+  "pct_sim": 94.8,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=161936"
+ },
+ "PL 4849/2019": {
+  "codigo": 138500,
+  "sim": 1,
+  "nao": 1,
+  "total": 2,
+  "pct_sim": 50.0,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=138500"
+ },
+ "PL 1472/2021": {
+  "codigo": 148141,
+  "sim": 185,
+  "nao": 83,
+  "total": 268,
+  "pct_sim": 69.0,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=148141"
+ },
+ "PEC 1/2022": {
+  "codigo": 151585,
+  "sim": 28,
+  "nao": 137,
+  "total": 165,
+  "pct_sim": 17.0,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=151585"
+ },
+ "MPV 838/2018": {
+  "codigo": 133487,
+  "sim": 8,
+  "nao": 12,
+  "total": 20,
+  "pct_sim": 40.0,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=133487"
+ },
+ "PLP 11/2020": {
+  "codigo": 151606,
+  "sim": 12,
+  "nao": 0,
+  "total": 12,
+  "pct_sim": 100.0,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=151606"
+ },
+ "PL 4458/2020": {
+  "codigo": 144510,
+  "sim": 4,
+  "nao": 0,
+  "total": 4,
+  "pct_sim": 100.0,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=144510"
+ },
+ "PL 1246/2021": {
+  "codigo": 159377,
+  "sim": 63,
+  "nao": 5,
+  "total": 68,
+  "pct_sim": 92.6,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=159377"
+ },
+ "PLP 128/2025": {
+  "codigo": 172144,
+  "sim": 0,
+  "nao": 0,
+  "total": 0,
+  "pct_sim": null,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=172144"
+ },
+ "PL 6235/2023": {
+  "codigo": 164069,
+  "sim": 0,
+  "nao": 0,
+  "total": 0,
+  "pct_sim": null,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=164069"
+ },
+ "PL 940/2022": {
+  "codigo": 152743,
+  "sim": 12,
+  "nao": 1,
+  "total": 13,
+  "pct_sim": 92.3,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=152743"
+ },
+ "PL 709/2022": {
+  "codigo": 152384,
+  "sim": 60,
+  "nao": 6,
+  "total": 66,
+  "pct_sim": 90.9,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=152384"
+ },
+ "PL 2011/2022": {
+  "codigo": 154142,
+  "sim": 1,
+  "nao": 0,
+  "total": 1,
+  "pct_sim": 100.0,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=154142"
+ },
+ "PLS 28/2017": {
+  "codigo": 128137,
+  "sim": 1237,
+  "nao": 46,
+  "total": 1283,
+  "pct_sim": 96.4,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=128137"
+ },
+ "PL 5149/2020": {
+  "codigo": 145409,
+  "sim": 213,
+  "nao": 4,
+  "total": 217,
+  "pct_sim": 98.2,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=145409"
+ },
+ "PL 3190/2023": {
+  "codigo": 158350,
+  "sim": 0,
+  "nao": 0,
+  "total": 0,
+  "pct_sim": null,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=158350"
+ },
+ "PL 823/2021": {
+  "codigo": 149406,
+  "sim": 11,
+  "nao": 0,
+  "total": 11,
+  "pct_sim": 100.0,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=149406"
+ },
+ "MPV 893/2019": {
+  "codigo": 138177,
+  "sim": 24,
+  "nao": 24,
+  "total": 48,
+  "pct_sim": 50.0,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=138177"
+ },
+ "PLC 137/2017": {
+  "codigo": 131528,
+  "sim": 1720,
+  "nao": 19,
+  "total": 1739,
+  "pct_sim": 98.9,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=131528"
+ },
+ "PL 1874/2022": {
+  "codigo": 153918,
+  "sim": 51,
+  "nao": 6,
+  "total": 57,
+  "pct_sim": 89.5,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=153918"
+ },
+ "MPV 795/2017": {
+  "codigo": 130444,
+  "sim": 22,
+  "nao": 742,
+  "total": 764,
+  "pct_sim": 2.9,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=130444"
+ },
+ "MPV 789/2017": {
+  "codigo": 130145,
+  "sim": 51,
+  "nao": 47,
+  "total": 98,
+  "pct_sim": 52.0,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=130145"
+ },
+ "MPV 1147/2022": {
+  "codigo": 155580,
+  "sim": 153,
+  "nao": 314,
+  "total": 467,
+  "pct_sim": 32.8,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=155580"
+ },
+ "PL 4871/2024": {
+  "codigo": 166693,
+  "sim": 0,
+  "nao": 0,
+  "total": 0,
+  "pct_sim": null,
+  "url": "https://www12.senado.leg.br/ecidadania/visualizacaomateria?id=166693"
+ }
+}
