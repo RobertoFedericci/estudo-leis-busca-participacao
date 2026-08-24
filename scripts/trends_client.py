@@ -134,3 +134,58 @@ class TrendsClient:
         with open(cache_file, "w", encoding="utf-8") as fh:
             json.dump({"key": key, "data": out}, fh, ensure_ascii=False)
         return out
+
+    def _widget(self, terms, timeframe, geo, wid):
+        req = {
+            "comparisonItem": [
+                {"keyword": t, "geo": geo, "time": timeframe} for t in terms
+            ],
+            "category": 0,
+            "property": "",
+        }
+        data = self._get(
+            f"{BASE}/explore",
+            {"hl": HL, "tz": TZ, "req": json.dumps(req, ensure_ascii=False)},
+        )
+        for w in data["widgets"]:
+            if w.get("id", "").startswith(wid):
+                return w
+        raise TrendsError(f"widget {wid} ausente")
+
+    def interest_by_region(self, termo, timeframe="2016-01-01 2026-08-17",
+                           geo=GEO, resolution="REGION"):
+        """Interesse por unidade da federação: {'BR-SP': 100, 'BR-AC': 0, ...}.
+
+        Atenção ao que o Trends devolve aqui: NÃO é volume absoluto. Cada valor
+        é a fração das buscas daquele estado que foram por este termo,
+        reescalada de 0 a 100 — ou seja, já vem corrigida pelo tamanho do
+        estado. São Paulo não lidera por ser grande.
+        """
+        key = json.dumps(["geo", termo, timeframe, geo, resolution],
+                         ensure_ascii=False, sort_keys=True)
+        cache_file = os.path.join(
+            self.cache_dir, "geo_" + str(abs(hash(key)) % (10**16)) + ".json"
+        )
+        if os.path.exists(cache_file):
+            with open(cache_file, encoding="utf-8") as fh:
+                blob = json.load(fh)
+            if blob.get("key") == key:
+                return blob["data"]
+
+        w = self._widget([termo], timeframe, geo, "GEO_MAP")
+        payload = dict(w["request"])
+        payload["resolution"] = resolution
+        payload["requestOptions"]["property"] = ""
+        raw = self._get(
+            f"{BASE}/widgetdata/comparedgeo",
+            {"hl": HL, "tz": TZ,
+             "req": json.dumps(payload, ensure_ascii=False),
+             "token": w["token"]},
+        )
+        out = {}
+        for item in raw["default"]["geoMapData"]:
+            cod = item.get("geoCode") or item.get("geoName")
+            out[cod] = item["value"][0] if item.get("value") else 0
+        with open(cache_file, "w", encoding="utf-8") as fh:
+            json.dump({"key": key, "data": out}, fh, ensure_ascii=False)
+        return out

@@ -16,6 +16,11 @@ CSS = """
   --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100;
   --s5:#e87ba4; --s6:#008300; --s7:#4a3aa7; --s8:#e34948;
   --wash:rgba(42,120,214,.14);
+  /* rampa sequencial azul para o mapa: no claro vai de claro a escuro; no
+     escuro a ordem se inverte, porque contra fundo preto "mais" lê-se "mais
+     luminoso" */
+  --seq-0:#eef4fd; --seq-1:#cde2fb; --seq-2:#9ec5f4; --seq-3:#6da7ec;
+  --seq-4:#3987e5; --seq-5:#256abf; --seq-6:#184f95; --seq-7:#0d366b;
   color-scheme:light;
 }
 @media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
@@ -24,6 +29,8 @@ CSS = """
   --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500;
   --s5:#d55181; --s6:#008300; --s7:#9085e9; --s8:#e66767;
   --wash:rgba(57,135,229,.20);
+  --seq-0:#12203a; --seq-1:#0d366b; --seq-2:#184f95; --seq-3:#256abf;
+  --seq-4:#3987e5; --seq-5:#6da7ec; --seq-6:#9ec5f4; --seq-7:#cde2fb;
   color-scheme:dark;
 }}
 :root[data-theme="dark"]{
@@ -32,6 +39,8 @@ CSS = """
   --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500;
   --s5:#d55181; --s6:#008300; --s7:#9085e9; --s8:#e66767;
   --wash:rgba(57,135,229,.20);
+  --seq-0:#12203a; --seq-1:#0d366b; --seq-2:#184f95; --seq-3:#256abf;
+  --seq-4:#3987e5; --seq-5:#6da7ec; --seq-6:#9ec5f4; --seq-7:#cde2fb;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -108,6 +117,18 @@ nav.abas button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(-
   border-radius:999px;padding:5px 13px;cursor:pointer}
 .chips button[aria-pressed="false"]{opacity:.45}
 .chips button i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.mapa-wrap{display:grid;gap:26px;grid-template-columns:minmax(280px,1.05fr) minmax(260px,.95fr);
+  align-items:start}
+@media (max-width:820px){.mapa-wrap{grid-template-columns:1fr}}
+.mapa svg{width:100%;height:auto;display:block}
+.mapa path{stroke:var(--surface);stroke-width:1.1;cursor:default;transition:opacity .12s}
+.mapa path:hover{opacity:.75}
+.escala{display:flex;align-items:center;gap:2px;margin:14px 0 0;font-size:11.5px;color:var(--muted)}
+.escala i{display:block;width:26px;height:10px}
+.escala span:first-child{margin-right:8px}
+.escala span:last-child{margin-left:8px}
+.select{font:inherit;font-size:13px;color:var(--ink);background:var(--surface);
+  border:1px solid var(--ring);border-radius:8px;padding:6px 10px;max-width:100%}
 footer{margin-top:64px;padding-top:20px;border-top:1px solid var(--grid);
   color:var(--muted);font-size:13px}
 """
@@ -531,6 +552,106 @@ Object.entries(window.__DADOS__ || {}).forEach(([slug,D])=>{
   pintar();
 })();
 
+/* ================= aba 6: geografia da busca =================
+   Encoding sequencial: uma matiz, claro→escuro (invertida no modo escuro).
+   O valor por estado é fração das buscas locais, não volume — somar entre
+   matérias exige ponderar pelo índice nacional de cada uma. */
+(function(){
+  const raiz = document.querySelector('[data-painel="geografia"]');
+  if(!raiz) return;
+  const GEO = window.__GEO__ || {}, MAPA = window.__MAPA__ || {paths:{}};
+  const TEMAS_CFG = window.__TEMAS__ || [];
+  const el = n => raiz.querySelector(`[data-el="${n}"]`);
+  const SEQ = ['--seq-1','--seq-2','--seq-3','--seq-4','--seq-5','--seq-6','--seq-7'];
+  const slugs = Object.keys(GEO);
+  let temaAtivo = slugs[0], materiaAtiva = '__todas';
+
+  const rotuloTema = sl => (TEMAS_CFG.find(t=>t.slug===sl)||{}).rotulo || sl;
+
+  // média das frações estaduais, ponderada pelo índice nacional das matérias
+  function indice(slug, materiaId){
+    const mats = GEO[slug] || {};
+    const escolhidas = materiaId && materiaId!=='__todas'
+      ? (mats[materiaId] ? [mats[materiaId]] : [])
+      : Object.values(mats);
+    const acc = {}, pesoTotal = escolhidas.reduce((a,m)=>a+m.nivel,0) || 1;
+    escolhidas.forEach(m=>{
+      Object.entries(m.regioes).forEach(([uf,v])=>{
+        const sigla = uf.replace('BR-','');
+        acc[sigla] = (acc[sigla]||0) + v*m.nivel;
+      });
+    });
+    Object.keys(acc).forEach(k=>acc[k]=acc[k]/pesoTotal);
+    const max = Math.max(...Object.values(acc), 1);
+    Object.keys(acc).forEach(k=>acc[k]=acc[k]/max*100);   // 100 = estado líder
+    return acc;
+  }
+
+  const corDe = v => `var(${SEQ[Math.min(SEQ.length-1, Math.floor(v/100*SEQ.length))]})`;
+
+  function chips(){
+    el('geo-temas').innerHTML = slugs.map(sl=>
+      `<button data-tema="${sl}" aria-pressed="${sl===temaAtivo}">${rotuloTema(sl)}</button>`).join('');
+  }
+
+  function seletor(){
+    const mats = Object.entries(GEO[temaAtivo]||{})
+      .sort((a,b)=>b[1].nivel-a[1].nivel);
+    el('geo-materia').innerHTML =
+      `<option value="__todas">Todas as ${mats.length} matérias do tema (ponderado)</option>`
+      + mats.map(([id,m])=>`<option value="${id}">${id} · ${m.ementa}</option>`).join('');
+    el('geo-materia').value = materiaAtiva;
+  }
+
+  function pintar(){
+    const idx = indice(temaAtivo, materiaAtiva);
+    const ord = Object.entries(idx).sort((a,b)=>b[1]-a[1]);
+    // mapa
+    el('geo-mapa').innerHTML =
+      `<svg viewBox="0 0 ${MAPA.largura} ${MAPA.altura}" role="img" aria-label="Mapa do interesse de busca por unidade da federação">`
+      + Object.entries(MAPA.paths).map(([uf,d])=>
+          `<path d="${d}" fill="${corDe(idx[uf]||0)}" data-uf="${uf}"><title>${uf}: ${fmt(idx[uf]||0)}</title></path>`).join('')
+      + `</svg><div class="tip"></div>`;
+    // escala
+    el('geo-escala').innerHTML = '<span>menos</span>'
+      + SEQ.map(v=>`<i style="background:var(${v})"></i>`).join('') + '<span>mais</span>';
+    // barras
+    const bw=430, rh=15.5, alt=ord.length*rh+8;
+    el('geo-barras').innerHTML =
+      `<svg viewBox="0 0 ${bw} ${alt}" role="img" aria-label="Índice por estado, em ordem">`
+      + ord.map(([uf,v],k)=>{
+          const y=k*rh+4, w=Math.max(1.5, v/100*(bw-92));
+          return `<text x="0" y="${y+10}" font-size="11" fill="var(--ink-2)">${uf}</text>`
+            + `<rect x="30" y="${y+1.5}" width="${w.toFixed(1)}" height="9" rx="2.5" fill="${corDe(v)}"/>`
+            + `<text x="${(30+w+6).toFixed(1)}" y="${y+10}" font-size="10.5" fill="var(--muted)">${fmt(v)}</text>`;
+        }).join('')
+      + `</svg>`;
+    el('g-lider').textContent = ord.length ? ord[0][0] : '—';
+  }
+
+  function contraste(){
+    el('geo-contraste').innerHTML = slugs.map(sl=>{
+      const idx = indice(sl,'__todas');
+      const ord = Object.entries(idx).sort((a,b)=>b[1]-a[1]);
+      if(!ord.length) return '';
+      const topo = ord.slice(0,5).map(([uf])=>uf).join(' · ');
+      const base = ord.slice(-5).map(([uf])=>uf).reverse().join(' · ');
+      const razao = ord[ord.length-1][1] ? (ord[0][1]/ord[ord.length-1][1]) : 0;
+      return `<tr><td><b>${rotuloTema(sl)}</b></td><td>${topo}</td><td>${base}</td>`
+        + `<td class="num">${razao?fmt(razao)+'×':'—'}</td></tr>`;
+    }).join('');
+  }
+
+  el('geo-temas').addEventListener('click', ev=>{
+    const b=ev.target.closest('button'); if(!b) return;
+    temaAtivo=b.dataset.tema; materiaAtiva='__todas'; chips(); seletor(); pintar();
+  });
+  el('geo-materia').addEventListener('change', ev=>{
+    materiaAtiva=ev.target.value; pintar();
+  });
+  chips(); seletor(); pintar(); contraste();
+})();
+
 /* aba inicial pela âncora da URL */
 if(location.hash){ const sl=location.hash.slice(1);
   if(abas.some(b=>b.dataset.aba===sl)) abrir(sl); }
@@ -775,7 +896,73 @@ def painel_geral(geral, votos_geral, prontos):
 """
 
 
+def painel_geografia(geo_por_tema, temas_prontos):
+    """Aba 6: onde no país cada agenda é procurada.
+
+    O valor do Trends por estado é a fração das buscas daquele estado dedicada
+    ao termo — já corrigida pelo tamanho do estado. Somar isso entre matérias
+    exige ponderar pelo índice nacional de cada uma, senão uma matéria
+    minúscula pesaria igual à maior do tema.
+    """
+    total = sum(len(v) for v in geo_por_tema.values())
+    return f"""
+<div class="tiles">
+  <div class="tile"><div class="v">{total}</div><div class="l">matérias com perfil regional</div>
+    <div class="h">das {sum(len(d["topicos"]) for _, d in temas_prontos)} do estudo</div></div>
+  <div class="tile"><div class="v">27</div><div class="l">unidades da federação</div>
+    <div class="h">resolução máxima do Trends para o Brasil</div></div>
+  <div class="tile"><div class="v" data-el="g-lider">—</div><div class="l">estado de maior interesse</div>
+    <div class="h">no recorte selecionado</div></div>
+</div>
+
+<section>
+  <h2>Onde o Brasil procura cada agenda</h2>
+  <p class="note">O Trends não devolve volume absoluto por estado: devolve a <b>fração das buscas
+  daquele estado</b> dedicada ao termo, reescalada de 0 a 100. O número já vem corrigido pelo tamanho
+  do estado — São Paulo não lidera por ser grande, e um estado pequeno pode liderar sem ter o maior
+  número de buscas. Leia como <i>saliência local</i>, não como tamanho de audiência.</p>
+  <div class="card">
+    <div class="chips" data-el="geo-temas"></div>
+    <div class="ctrl">
+      <label style="color:var(--muted)">Matéria
+        <select class="select" data-el="geo-materia"></select>
+      </label>
+    </div>
+    <div class="mapa-wrap">
+      <div>
+        <div class="mapa chart" data-el="geo-mapa"><div class="tip"></div></div>
+        <div class="escala" data-el="geo-escala"></div>
+      </div>
+      <div class="chart" data-el="geo-barras"></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Contraste entre agendas</h2>
+  <p class="note">O mesmo índice, tema a tema, para os cinco estados de maior e menor saliência de cada
+  um. Serve para ver se as agendas dividem o país do mesmo jeito ou de jeitos diferentes.</p>
+  <div class="card scroll">
+    <table>
+      <thead><tr><th>Tema</th><th>Mais procura</th><th>Menos procura</th>
+        <th class="num">Razão</th></tr></thead>
+      <tbody data-el="geo-contraste"></tbody>
+    </table>
+  </div>
+</section>
+"""
+
+
 def main():
+    with open(os.path.join(DADOS_DIR, "uf_paths.json"), encoding="utf-8") as fh:
+        mapa_uf = json.load(fh)
+    geo_por_tema = {}
+    for cfg in TEMAS:
+        cam = os.path.join(DADOS_DIR, cfg["slug"], "geo.json")
+        if os.path.exists(cam):
+            with open(cam, encoding="utf-8") as fh:
+                geo_por_tema[cfg["slug"]] = {k: v for k, v in json.load(fh).items() if v}
+
     temas, dados_js = [], {}
     for cfg in TEMAS:
         d = carregar(cfg["slug"])
@@ -804,24 +991,33 @@ def main():
         f'{cfg["rotulo"]}</button>'
         for i, (cfg, d) in enumerate(temas) if d
     ) + '<button role="tab" data-aba="ecidadania" aria-selected="false">Participação · todas</button>'
+    if geo_por_tema:
+        abas += '<button role="tab" data-aba="geografia" aria-selected="false">Geografia</button>' 
 
     paineis = ""
     for i, (cfg, d) in enumerate(prontos):
         paineis += (f'<div role="tabpanel" data-painel="{cfg["slug"]}"{"" if i == 0 else " hidden"}>'
                     + painel_html(cfg, d, metricas(d)) + "</div>")
     paineis += '<div role="tabpanel" data-painel="ecidadania" hidden>' + painel_geral(geral, votos_geral, prontos) + "</div>"
+    if geo_por_tema:
+        for slug, mats in geo_por_tema.items():
+            ementas = {t["id"]: t["ementa"] for _, d in prontos for t in d["topicos"]}
+            for mid, v in mats.items():
+                v["ementa"] = ementas.get(mid, mid)
+        paineis += ('<div role="tabpanel" data-painel="geografia" hidden>'
+                    + painel_geografia(geo_por_tema, prontos) + "</div>")
 
     faltando = [cfg["rotulo"] for cfg, d in temas if not d]
     aviso = (f'<p class="note" style="margin-top:14px">Em coleta: {", ".join(faltando)}.</p>'
              if faltando else "")
 
     n_recorte = 50
-    html = f"""<title>Busca e participação nas leis brasileiras</title>
+    html = f"""<title>Atenção e Participação Pública no Senado</title>
 <style>{CSS}</style>
 <div class="wrap">
 <header>
   <p class="kicker">Estudo de Roberto Federicci · Google Trends e e-Cidadania · {ini[:4]}–{fim[:4]}</p>
-  <h1>O que o Brasil procura das leis que o Senado aprova</h1>
+  <h1>Análise de atenção e participação pública em matérias do Senado Federal</h1>
   <p class="sub">Quanta atenção pública receberam, na busca do Google e na consulta popular do Senado,
   as matérias aprovadas entre 2017 e 2026 em quatro temas. Cada chave de busca une o número da
   proposição ao tópico que descreve seu objeto — <span class="q">PL 2159 / lei geral do licenciamento
@@ -851,6 +1047,10 @@ def main():
     literalmente nulo.</li>
     <li><b>Granularidade mensal.</b> Janelas acima de cinco anos vêm em meses; picos de poucos dias somem
     dentro do mês.</li>
+    <li><b>O mapa mede fração, não volume.</b> O Trends devolve, por estado, a parcela das buscas
+    locais dedicada ao termo, já corrigida pelo tamanho do estado. Para chegar ao índice do tema, cada
+    matéria é ponderada pelo seu índice nacional. Estados com menos diversidade de busca tendem a
+    mostrar frações mais altas, então a leitura correta é de saliência relativa, não de audiência.</li>
     <li><b>O voto do e-Cidadania é autosselecionado.</b> Vota quem foi mobilizado a votar — entidade,
     bancada, campanha de rede social. Serve para ler <i>direção e intensidade de mobilização</i>, nunca
     como pesquisa de opinião.</li>
@@ -868,6 +1068,8 @@ def main():
 </div>
 <script>window.__DADOS__ = {json.dumps(dados_js, ensure_ascii=False)};</script>
 <script>window.__GERAL__ = {json.dumps(geral, ensure_ascii=False)};</script>
+<script>window.__GEO__ = {json.dumps(geo_por_tema, ensure_ascii=False)};</script>
+<script>window.__MAPA__ = {json.dumps(mapa_uf, ensure_ascii=False)};</script>
 <script>window.__TEMAS__ = {json.dumps([{k: c[k] for k in ("slug", "rotulo", "cor", "marcos")} for c in TEMAS], ensure_ascii=False)};</script>
 <script>{JS}</script>
 """
