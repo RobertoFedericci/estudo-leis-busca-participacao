@@ -5,7 +5,7 @@ Senado, as **46 matérias de tema ambiental aprovadas pelo Senado Federal entre
 2017 e 2026**. Uma década de legislação ambiental, medida pelo que o cidadão
 procurou e pelo que ele opinou.
 
-**Página:** https://robertofedericci.github.io/estudo-leis-ambientais-busca/
+**Página:** https://robertofedericci.github.io/estudo-leis-busca-participacao/
 
 Estudo de Roberto Federicci. Trabalho independente, sem vínculo com partido,
 campanha ou candidatura.
